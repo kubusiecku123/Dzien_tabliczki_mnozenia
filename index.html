@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Dzień Tabliczki Mnożenia — Tajny Sejf</title>
+<style>
+:root{--bg:#101722;--panel:#1b2735;--panel2:#111b27;--line:#3b4a5c;--gold:#ffda55;--gold2:#fff09a;--muted:#b5c2d1;--green:#69dfa1;--red:#ff8585}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;padding:24px 14px 35px;color:#f7f9fc;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;background:radial-gradient(ellipse at 50% -10%,#30435b 0,#1a2738 43%,#0c121b 100%)}
+main{width:min(1000px,100%);margin:auto}header{text-align:center;margin:5px 0 25px}.eyebrow{font-size:.78rem;font-weight:900;letter-spacing:.2em;color:var(--gold);text-transform:uppercase}h1{font-size:clamp(2rem,6vw,3.5rem);line-height:1.08;margin:9px 0;text-shadow:0 4px 20px #0006}header p,.muted{color:var(--muted)}
+.panel{background:linear-gradient(145deg,#202e40,#151f2d);border:1px solid #ffffff1c;border-radius:22px;padding:clamp(18px,4vw,32px);box-shadow:0 20px 60px #0005}
+h2{margin:0 0 7px;font-size:1.45rem}.desc{margin:0 0 20px;color:var(--muted);line-height:1.5}
+label{display:block;font-weight:750;margin:15px 0 7px}input,select{font:inherit;color:white;background:#0d1621;border:1px solid #526276;border-radius:11px;padding:12px 13px;width:100%;outline:none}input:focus,select:focus{border-color:var(--gold);box-shadow:0 0 0 3px #ffda5524}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.hint{font-size:.84rem;color:var(--muted);margin-top:6px}
+button{font:inherit;font-weight:850;border:0;border-radius:11px;padding:12px 17px;cursor:pointer;transition:filter .15s,transform .15s}button:hover{filter:brightness(1.08);transform:translateY(-1px)}button:disabled{opacity:.45;cursor:not-allowed;transform:none}.primary{background:linear-gradient(135deg,var(--gold2),var(--gold));color:#29210c}.secondary{background:#34465a;color:white}.danger{background:#633b43;color:#fff}.wide{width:100%;margin-top:20px}
+.hidden{display:none!important}.topbar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px}.timer{font-variant-numeric:tabular-nums;font-size:1.5rem;font-weight:900;color:var(--gold2);background:#0e1722;border:1px solid #526276;border-radius:12px;padding:8px 15px;min-width:112px;text-align:center}.timer-controls{display:flex;gap:7px;flex-wrap:wrap}.timer-controls button{padding:8px 12px;font-size:.88rem}
+.team-list{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0 18px}.team{background:#34465a;color:#f5f7fa;border:1px solid #526276}.team.active{background:var(--gold);color:#29210c;border-color:var(--gold)}.team.solved{background:#1c6847;border-color:#62d69a;color:#fff}.team small{opacity:.8}
+.game-layout{display:grid;grid-template-columns:minmax(0,1fr) 260px;gap:18px;align-items:start}.playbox{background:#101a26;border:1px solid #ffffff16;border-radius:17px;padding:18px}.current-team{font-weight:850;color:var(--gold2);font-size:1.1rem}.cells{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin:22px 0}.char{width:clamp(30px,5.5vw,43px);height:52px;border:1px solid #63758a;border-radius:9px;background:#080f18;color:var(--gold2);text-align:center;font-size:1.35rem;font-weight:850;padding:0;box-shadow:inset 0 3px 8px #0008}.char:focus{border-color:var(--gold);box-shadow:0 0 0 3px #ffda5530}.char.filled{border-color:#c9a943}.char:disabled{opacity:1}
+.actions{display:flex;gap:9px}.actions button{white-space:nowrap}.status{min-height:26px;text-align:center;color:var(--muted);margin:12px 0 0}.status.good{color:var(--green);font-weight:800}.status.bad{color:var(--red);font-weight:800}
+.scorecard{background:#101a26;border:1px solid #ffffff16;border-radius:17px;padding:16px}.scorecard h3{margin:0 0 12px}.score-row{display:flex;justify-content:space-between;gap:8px;padding:9px 0;border-bottom:1px solid #ffffff13;font-size:.92rem}.score-row:last-child{border:0}.tick{color:var(--green);font-weight:900}.tries{color:var(--muted);font-variant-numeric:tabular-nums}
+.vault-wrap{text-align:center;margin:20px auto 8px}.vault-title{font-size:clamp(1.35rem,4vw,2rem);font-weight:950;color:var(--gold2);margin:0}.vault-sub{color:var(--muted);margin:5px 0 12px}
+.vault{width:min(310px,75vw);aspect-ratio:1;margin:16px auto 12px;position:relative;perspective:900px;filter:drop-shadow(0 18px 24px #0009)}
+.vault-rim{position:absolute;inset:0;border-radius:50%;background:linear-gradient(135deg,#b7c0c8,#4b5966 28%,#202b36 70%,#8b969f);padding:13px;box-shadow:inset 0 0 0 4px #d1d8de55}
+.vault-cavity{width:100%;height:100%;border-radius:50%;background:radial-gradient(circle at 50% 45%,#926b20,#39280c 68%,#15110a);display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:5px;padding:20%;font-size:clamp(1.5rem,5vw,2.3rem);box-shadow:inset 0 0 35px #000}
+.vault-cavity span{animation:glint 1.3s infinite alternate}.vault-cavity span:nth-child(even){animation-delay:.4s}@keyframes glint{to{filter:brightness(1.6);transform:scale(1.12)}}
+.door{position:absolute;inset:4%;border-radius:50%;border:11px solid #9ca8b1;background:radial-gradient(circle at 35% 28%,#687783,#34414c 68%,#202a34);box-shadow:inset 0 0 0 7px #1b252e,inset 0 0 25px #000b,0 5px 12px #0008;transform-origin:7% 50%;transition:transform 1.45s cubic-bezier(.18,.78,.22,1);z-index:3;display:grid;place-items:center}
+.door:before{content:"";position:absolute;inset:14%;border:5px solid #b8c2c9;border-radius:50%;box-shadow:0 0 0 5px #293640}
+.door.open{transform:rotateY(-115deg)}
+.handle{width:68px;height:68px;border:9px solid #d2d9dd;border-radius:50%;position:relative;z-index:2;box-shadow:0 0 0 5px #36434d}
+.handle:before,.handle:after{content:"";position:absolute;background:#d2d9dd;left:50%;top:50%;transform:translate(-50%,-50%)}.handle:before{width:100px;height:7px}.handle:after{height:100px;width:7px}
+.vault-caption{font-size:1.5rem;color:var(--gold2);font-weight:950;margin:10px 0 3px}
+.winners{color:var(--green);font-weight:800}.footer{text-align:center;color:#9eacbd;font-size:.85rem;margin:20px 0}
+@media(max-width:720px){.game-layout{grid-template-columns:1fr}.scorecard{order:2}.grid{grid-template-columns:1fr}.actions{flex-direction:column}.actions button{width:100%}.topbar{align-items:flex-start}}
+</style>
+</head>
+<body><main>
+<header><div class="eyebrow">Wielkie szkolne wyzwanie</div><h1>Dzień Tabliczki Mnożenia</h1><p>Rozszyfruj tajne hasło i otwórz sejf pełen skarbów!</p></header>
+
+<section class="panel" id="setup">
+<h2>🔐 Przygotuj wyzwanie</h2><p class="desc">Prowadzący ustawia tajne hasło i liczbę uczestników. Hasło może mieć maksymalnie 20 znaków.</p>
+<label for="secret">Tajne hasło</label><input id="secret" type="password" maxlength="20" autocomplete="new-password" placeholder="Wpisz tajne hasło">
+<div class="hint">Hasło jest ukryte. Możesz użyć liter i cyfr.</div>
+<div class="grid"><div><label for="count">Liczba drużyn / graczy</label><input id="count" type="number" min="1" max="20" value="2"></div><div><label for="mode">Tryb gry</label><select id="mode"><option value="team">Drużyny</option><option value="player">Gracze</option></select></div></div>
+<button class="primary wide" id="start">ROZPOCZNIJ WYZWANIE</button>
+</section>
+
+<section class="panel hidden" id="game">
+<div class="topbar"><div><h2>🗝️ Otwórz sejf</h2><div class="muted" id="gameInfo">Wybierz drużynę i zgaduj!</div></div>
+<div><div class="timer" id="timer">00:00</div><div class="timer-controls" style="margin-top:7px"><button class="secondary" id="pause">Pauza</button><button class="secondary" id="restartTimer">Od nowa</button></div></div></div>
+<div class="team-list" id="teamList"></div>
+<div class="game-layout"><div class="playbox">
+<div class="current-team" id="currentTeam">Drużyna 1</div>
+<p class="muted" style="margin:5px 0 0">Wpisz po jednym znaku w każde pole. Po wpisaniu znak automatycznie przeskoczy dalej.</p>
+<div class="cells" id="cells"></div>
+<div class="actions"><button class="primary" id="submit">SPRAWDŹ HASŁO</button><button class="secondary" id="clear">WYCZYŚĆ</button></div>
+<div class="status" id="status" aria-live="polite">Każda drużyna może zgadywać, nawet gdy inna już otworzy sejf.</div>
+</div><aside class="scorecard"><h3>🏆 Wyniki</h3><div id="scoreRows"></div></aside></div>
+<div style="display:flex;gap:9px;flex-wrap:wrap;margin-top:18px"><button class="secondary" id="finish">ZAKOŃCZ GRĘ</button><button class="danger" id="back">NOWA GRA</button></div>
+</section>
+
+<section class="panel hidden" id="result">
+<div class="vault-wrap"><h2 class="vault-title">🎉 SEJF ODKRYŁ SWOJĄ TAJEMNICĘ!</h2><p class="vault-sub" id="resultText">Oto skarby!</p>
+<div class="vault" id="vault"><div class="vault-rim"><div class="vault-cavity"><span>💰</span><span>🪙</span><span>💎</span><span>👑</span><span>🪙</span><span>💰</span></div></div><div class="door" id="door"><div class="handle"></div></div></div>
+<div class="vault-caption">SEJF OTWARTY!</div><p class="muted" id="winnerList"></p>
+<button class="primary wide" id="returnGame">WRÓĆ DO GRY — POZOSTAŁE DRUŻYNY MOGĄ ZGADYWAĆ</button>
+<button class="secondary wide" id="newFromResult">ZAKOŃCZ I USTAW NOWĄ GRĘ</button>
+</div></section>
+<p class="footer">Dzień Tabliczki Mnożenia • Powodzenia! ✨</p>
+</main>
+<script>
+const $=id=>document.getElementById(id);
+let secret="",count=2,mode="team",active=0,teams=[],elapsed=0,tick=null,running=false,gameEnded=false;
+const norm=s=>s.normalize("NFC").toLocaleLowerCase("pl-PL");
+function show(which){["setup","game","result"].forEach(id=>$(id).classList.toggle("hidden",id!==which));}
+function fmt(s){return String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0")}
+function paintTimer(){$("timer").textContent=fmt(elapsed)}
+function startClock(){if(running||gameEnded)return;running=true;$("pause").textContent="Pauza";tick=setInterval(()=>{elapsed++;paintTimer()},1000)}
+function pauseClock(){if(!running)return;running=false;clearInterval(tick);$("pause").textContent="Wznów"}
+function resetClock(){pauseClock();elapsed=0;paintTimer();if(!gameEnded)startClock()}
+function teamName(i){return (mode==="team"?"Drużyna ":"Gracz ")+(i+1)}
+function renderTeams(){
+ $("teamList").innerHTML="";
+ teams.forEach((t,i)=>{let b=document.createElement("button");b.className="team"+(i===active?" active":"")+(t.solved?" solved":"");b.textContent=teamName(i)+(t.solved?" ✓":"");b.onclick=()=>selectTeam(i);$("teamList").appendChild(b)});
+ $("scoreRows").innerHTML="";
+ teams.forEach((t,i)=>{let r=document.createElement("div");r.className="score-row";r.innerHTML=`<span>${teamName(i)} ${t.solved?'<span class="tick">✓</span>':''}</span><span class="tries">${t.tries} prób${t.solved?' • odgadnięto':''}</span>`;$("scoreRows").appendChild(r)});
+ $("currentTeam").textContent=teamName(active)+(teams[active].solved?" — HASŁO ODGADNIĘTE!":"");
+}
+function buildInputs(){
+ $("cells").innerHTML="";
+ for(let i=0;i<secret.length;i++){
+  const inp=document.createElement("input");inp.className="char";inp.type="password";inp.maxLength=1;inp.autocomplete="off";inp.inputMode="text";inp.setAttribute("aria-label","Znak "+(i+1));
+  inp.addEventListener("input",()=>{if(inp.value.length>1)inp.value=inp.value.slice(-1);inp.classList.toggle("filled",!!inp.value);if(inp.value&&i<secret.length-1)$("cells").children[i+1].focus()});
+  inp.addEventListener("keydown",e=>{if(e.key==="Backspace"&&!inp.value&&i>0){$("cells").children[i-1].value="";$("cells").children[i-1].classList.remove("filled");$("cells").children[i-1].focus()}if(e.key==="Enter")submitGuess()});
+  inp.addEventListener("paste",e=>{e.preventDefault();const chars=(e.clipboardData||window.clipboardData).getData("text").slice(0,secret.length).split("");chars.forEach((ch,j)=>{if($("cells").children[j]){$("cells").children[j].value=ch;$("cells").children[j].classList.toggle("filled",!!ch)}});$("cells").children[Math.min(chars.length,secret.length)-1]?.focus()});
+  $("cells").appendChild(inp);
+ }
+}
+function readGuess(){return [...$("cells").children].map(x=>x.value).join("")}
+function selectTeam(i){active=i;renderTeams();[...$("cells").children].forEach(x=>{x.value="";x.classList.remove("filled")});$("status").textContent=teams[i].solved?"Ta drużyna już odgadła hasło — możecie spróbować ponownie lub kibicować!":"Teraz zgaduje "+teamName(i)+"."; $("status").className="status";$("cells").children[0]?.focus()}
+function startGame(){
+ const s=$("secret").value;const n=Number($("count").value);
+ if(!s.length){alert("Wpisz tajne hasło.");return}
+ if([...s].length>20){alert("Hasło może mieć maksymalnie 20 znaków.");return}
+ if(!Number.isInteger(n)||n<1||n>20){alert("Wybierz od 1 do 20 drużyn lub graczy.");return}
+ secret=s;count=n;mode=$("mode").value;active=0;gameEnded=false;teams=Array.from({length:count},()=>({solved:false,tries:0}));
+ $("secret").value="";$("gameInfo").textContent=`Hasło ma ${[...secret].length} znaków. Każdy uczestnik może próbować niezależnie.`;
+ buildInputs();renderTeams();elapsed=0;paintTimer();show("game");startClock();$("cells").children[0]?.focus();
+}
+function submitGuess(){
+ if(gameEnded)return;
+ const guess=readGuess();if([...guess].length!==[...secret].length){$("status").textContent=`Uzupełnij wszystkie ${[...secret].length} pól.`;$("status").className="status bad";return}
+ teams[active].tries++;
+ if(norm(guess)===norm(secret)){
+  if(!teams[active].solved){teams[active].solved=true;$("status").textContent="🎉 Brawo! "+teamName(active)+" odgadła hasło! Pozostali nadal mogą grać.";$("status").className="status good";renderTeams();showVault(active);}
+  else{$("status").textContent="Ta drużyna już ma zaliczone hasło!";$("status").className="status good"}
+ }else{$("status").textContent="❌ Niepoprawne hasło. Spróbujcie ponownie!";$("status").className="status bad";renderTeams()}
+}
+function showVault(winner){
+ $("resultText").textContent=teamName(winner)+" odgadła hasło po "+teams[winner].tries+" próbach!";
+ $("winnerList").textContent="Czas gry: "+fmt(elapsed)+" • Pozostali uczestnicy nadal mogą próbować.";
+ $("door").classList.remove("open");show("result");setTimeout(()=>$("door").classList.add("open"),250);
+}
+function clearInputs(){[...$("cells").children].forEach(x=>{x.value="";x.classList.remove("filled")});$("cells").children[0]?.focus()}
+function endGame(){gameEnded=true;pauseClock();$("pause").disabled=true;$("submit").disabled=true;$("status").textContent="Gra zakończona. Czas: "+fmt(elapsed);$("status").className="status"}
+function newGame(){pauseClock();secret="";gameEnded=false;$("pause").disabled=false;$("submit").disabled=false;$("door").classList.remove("open");show("setup")}
+$("start").onclick=startGame;$("submit").onclick=submitGuess;$("clear").onclick=clearInputs;$("pause").onclick=()=>running?pauseClock():startClock();$("restartTimer").onclick=resetClock;
+$("finish").onclick=endGame;$("back").onclick=newGame;$("returnGame").onclick=()=>{show("game");renderTeams();$("status").textContent="Sejf już otwarty, ale pozostali nadal mogą zgadywać!";$("status").className="status good"};
+$("newFromResult").onclick=newGame;
+</script></body></html>
