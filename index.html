@@ -1,7 +1,6 @@
 <!doctype html>
 <html lang="pl">
 <head>
- <link rel="icon" type="image/png" href="/Dzien_tabliczki_mnozenia/tajny-sejf-favicon.png">
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Dzień Tabliczki Mnożenia — Tajny Sejf</title>
 <style>
@@ -22,7 +21,14 @@ button{font:inherit;font-weight:850;border:0;border-radius:11px;padding:12px 17p
 .vault{width:min(310px,75vw);aspect-ratio:1;margin:16px auto 12px;position:relative;perspective:900px;filter:drop-shadow(0 18px 24px #0009)}
 .vault-rim{position:absolute;inset:0;border-radius:50%;background:linear-gradient(135deg,#b7c0c8,#4b5966 28%,#202b36 70%,#8b969f);padding:13px;box-shadow:inset 0 0 0 4px #d1d8de55}
 .vault-cavity{width:100%;height:100%;border-radius:50%;background:radial-gradient(circle at 50% 45%,#926b20,#39280c 68%,#15110a);display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:5px;padding:20%;font-size:clamp(1.5rem,5vw,2.3rem);box-shadow:inset 0 0 35px #000}
-.vault-cavity span{animation:glint 1.3s infinite alternate}.vault-cavity span:nth-child(even){animation-delay:.4s}@keyframes glint{to{filter:brightness(1.6);transform:scale(1.12)}}
+.vault-cavity span{animation:glint 1.3s infinite alternate}.vault-cavity span:nth-child(even){animation-delay:.4s}
+.letter-trigger{display:block;width:100%;max-width:145px;margin:8px auto 0;padding:9px 12px;background:linear-gradient(135deg,#fff1b0,#e8b93d);color:#3a2700;border:2px solid #fff0a0;box-shadow:0 0 18px #ffdc5a88;animation:glint 1.3s infinite alternate}
+.open-vault-btn{margin:12px auto 0;display:block;min-width:min(100%,280px);font-size:1.05rem}
+.letter-card{max-width:620px;margin:18px auto 0;padding:clamp(20px,4vw,32px);background:linear-gradient(145deg,#fff7dc,#f1dfae);color:#493719;border:5px solid #c79b43;border-radius:12px;box-shadow:0 16px 45px #0008;text-align:left;position:relative}
+.letter-card:before{content:"";position:absolute;inset:8px;border:1px solid #b58a3b;border-radius:5px;pointer-events:none}
+.letter-card h3{text-align:center;color:#8a5b0b;font-size:1.45rem;margin:4px 0 18px}
+.letter-card p{line-height:1.65;margin:10px 0}
+.letter-sign{text-align:right;font-weight:900;color:#80540b;margin-top:20px}@keyframes glint{to{filter:brightness(1.6);transform:scale(1.12)}}
 .door{position:absolute;inset:4%;border-radius:50%;border:11px solid #9ca8b1;background:radial-gradient(circle at 35% 28%,#687783,#34414c 68%,#202a34);box-shadow:inset 0 0 0 7px #1b252e,inset 0 0 25px #000b,0 5px 12px #0008;transform-origin:7% 50%;transition:transform 1.45s cubic-bezier(.18,.78,.22,1);z-index:3;display:grid;place-items:center}
 .door:before{content:"";position:absolute;inset:14%;border:5px solid #b8c2c9;border-radius:50%;box-shadow:0 0 0 5px #293640}
 .door.open{transform:rotateY(-115deg)}
@@ -60,8 +66,10 @@ button{font:inherit;font-weight:850;border:0;border-radius:11px;padding:12px 17p
 
 <section class="panel hidden" id="result">
 <div class="vault-wrap"><h2 class="vault-title">🎉 SEJF ODKRYŁ SWOJĄ TAJEMNICĘ!</h2><p class="vault-sub" id="resultText">Oto skarby!</p>
-<div class="vault" id="vault"><div class="vault-rim"><div class="vault-cavity"><span>💰</span><span>🪙</span><span>💎</span><span>👑</span><span>🪙</span><span>💰</span></div></div><div class="door" id="door"><div class="handle"></div></div></div>
-<div class="vault-caption">SEJF OTWARTY!</div><p class="muted" id="winnerList"></p>
+<div class="vault" id="vault"><div class="vault-rim"><div class="vault-cavity"><span>💰</span><span>🪙</span><span>💎</span><span>👑</span><span>🪙</span><span>💰</span><button class="letter-trigger hidden" id="letterTrigger">✉️ LIST</button></div></div><div class="door" id="door"><div class="handle"></div></div></div>
+<div class="vault-caption" id="vaultCaption">🔒 SEJF ZAMKNIĘTY</div><p class="muted" id="winnerList"></p>
+<button class="primary open-vault-btn" id="openVault">🔓 KLIKNIJ, ABY OTWORZYĆ SEJF!</button>
+<div class="letter-card hidden" id="letterCard" aria-live="polite"><h3>✉️ WIADOMOŚĆ ZE SKARBCA</h3><p><strong>GRATULACJE!</strong></p><p id="letterGreeting">Udało Wam się otworzyć Tajny Sejf!</p><p>Udowodniliście, że tabliczka mnożenia nie ma przed Wami tajemnic. Wasza wiedza, spryt i wytrwałość doprowadziły Was do skarbu.</p><p><strong>Jesteście prawdziwymi mistrzami tabliczki mnożenia!</strong> 🏆</p><p>Nie przestawajcie ćwiczyć, bo największym skarbem jest wiedza!</p><p class="letter-sign">Gratulujemy!<br>Organizatorzy Dnia Tabliczki Mnożenia</p></div>
 <button class="primary wide" id="returnGame">WRÓĆ DO GRY — POZOSTAŁE DRUŻYNY MOGĄ ZGADYWAĆ</button>
 <button class="secondary wide" id="newFromResult">ZAKOŃCZ I USTAW NOWĄ GRĘ</button>
 </div></section>
@@ -118,12 +126,18 @@ function submitGuess(){
 function showVault(winner){
  $("resultText").textContent=teamName(winner)+" odgadła hasło po "+teams[winner].tries+" próbach!";
  $("winnerList").textContent="Czas gry: "+fmt(elapsed)+" • Pozostali uczestnicy nadal mogą próbować.";
- $("door").classList.remove("open");show("result");setTimeout(()=>$("door").classList.add("open"),250);
+ $("letterGreeting").textContent=teamName(winner)+" — udało Wam się otworzyć Tajny Sejf!";
+ $("door").classList.remove("open");$("letterTrigger").classList.add("hidden");$("letterCard").classList.add("hidden");$("openVault").classList.remove("hidden");$("vaultCaption").textContent="🔒 SEJF ZAMKNIĘTY";show("result");
 }
+function openVault(){
+ $("door").classList.add("open");$("openVault").classList.add("hidden");$("vaultCaption").textContent="💎 SKARBY ODNALEZIONE!";
+ setTimeout(()=>$("letterTrigger").classList.remove("hidden"),850);
+}
+function openLetter(){$("letterCard").classList.remove("hidden");$("letterTrigger").textContent="📜 LIST OTWARTY";$("letterTrigger").disabled=true;}
 function clearInputs(){[...$("cells").children].forEach(x=>{x.value="";x.classList.remove("filled")});$("cells").children[0]?.focus()}
 function endGame(){gameEnded=true;pauseClock();$("pause").disabled=true;$("submit").disabled=true;$("status").textContent="Gra zakończona. Czas: "+fmt(elapsed);$("status").className="status"}
 function newGame(){pauseClock();secret="";gameEnded=false;$("pause").disabled=false;$("submit").disabled=false;$("door").classList.remove("open");show("setup")}
 $("start").onclick=startGame;$("submit").onclick=submitGuess;$("clear").onclick=clearInputs;$("pause").onclick=()=>running?pauseClock():startClock();$("restartTimer").onclick=resetClock;
 $("finish").onclick=endGame;$("back").onclick=newGame;$("returnGame").onclick=()=>{show("game");renderTeams();$("status").textContent="Sejf już otwarty, ale pozostali nadal mogą zgadywać!";$("status").className="status good"};
-$("newFromResult").onclick=newGame;
+$("newFromResult").onclick=newGame;$("openVault").onclick=openVault;$("letterTrigger").onclick=openLetter;
 </script></body></html>
